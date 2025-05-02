@@ -1,7 +1,8 @@
-use std::io::{stdin, stdout, Read, Write};
+use std::io::{stdin};
 
 #[derive(Debug)]
 struct Task {
+    task_id:i16,
     is_done:bool,
     task: String,
 }
@@ -13,18 +14,20 @@ fn add_task(tasks : &mut Vec<Task>, task: Task) {
 
 fn show_all_tasks(tasks : &mut Vec<Task>){
     println!("tasks to do::");
-    for (i,task) in tasks.iter().enumerate(){
+    for task in tasks{
         if !task.is_done{
-            println!("Task Number {} => {}",i+1,task.task);
+            println!("Task Number {} => {}",task.task_id,task.task);
         } 
     }
 }
+
 fn main() {
     let mut tasks:Vec<Task> = Vec::new();
     println!("Welcome to TODO List: ");
     loop {
         println!("1. To  display all tasks");
         println!("2. To add task");
+        println!("3. Remove task");
         println!("9. To Exit");
         let mut choice:String = String::new();
         stdin().read_line(&mut choice).expect("failed to read string from line");
@@ -35,9 +38,16 @@ fn main() {
             2 => {
                 let mut taskinput:String = String::new();
                 stdin().read_line(&mut taskinput).expect("enter a valid string");
-                let taskc:Task = Task { is_done: false, task: taskinput };
+                let taskc:Task = Task {task_id: tasks.len() as i16 +1 , is_done: false, task: taskinput };
                 add_task(&mut tasks, taskc);
             },
+            3=> {
+                let mut deleteIdstr:String = String::new();
+                stdin().read_line(&mut deleteIdstr).expect("failed to get id as input");
+                let mut  deleteId:i16 = deleteIdstr.trim().parse().expect("failed to parse input") ;
+                
+                tasks.remove(deleteId as usize );  
+            }
             9 => {println!("thanks come again!"); break},
             _ => println!("invalid input"),
         }
